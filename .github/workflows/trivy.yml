@@ -4,17 +4,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  trivy-scan:
+  scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Trivy via official script
+      - name: Install Trivy
         run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+          wget -qO trivy.tar.gz https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.64.1_Linux-64bit.tar.gz
+          tar zxvf trivy.tar.gz
+          sudo mv trivy /usr/local/bin/
 
-      - name: Run Trivy vulnerability scanner
-        run: |
-          trivy fs --exit-code 0 --ignore-unfixed --severity HIGH,CRITICAL .
+      - name: Run Trivy scan on filesystem
+        run: trivy fs . --exit-code 1 --severity CRITICAL,HIGH --no-progress

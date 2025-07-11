@@ -3,14 +3,23 @@ provider "aws" {
 }
 
 resource "aws_security_group" "web_sg" {
-  name        = "allow_http"
-  description = "Allow HTTP inbound traffic"
+  name        = "allow_http_ssh"
+  description = "Allow HTTP and SSH inbound traffic"
 
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP"
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow SSH"
   }
 
   egress {
@@ -18,12 +27,14 @@ resource "aws_security_group" "web_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 }
 
 resource "aws_instance" "web" {
-  ami           = "ami-0e670eb768a5fc3d4" # Amazon Linux 2 in ap-south-1
-  instance_type = "t2.micro"
+  ami             = "ami-0e670eb768a5fc3d4" # Amazon Linux 2
+  instance_type   = "t2.micro"
+  key_name        = "sumit-github-key" # ✅ Must match your uploaded EC2 Key Pair name in AWS Console
   security_groups = [aws_security_group.web_sg.name]
 
   user_data = <<-EOF

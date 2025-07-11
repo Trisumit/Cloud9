@@ -1,23 +1,26 @@
-name: Trivy Vulnerability Scanner
+name: Trivy Vulnerability Scan
 
 on:
   workflow_dispatch:
 
 jobs:
-  scan:
+  trivy-scan:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Trivy
+      - name: Install Trivy via APT
         run: |
           sudo apt-get update
-          sudo apt-get install wget -y
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.51.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.51.1_Linux-64bit.deb
+          sudo apt-get install -y wget gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor > trivy.gpg
+          sudo install -o root -g root -m 644 trivy.gpg /usr/share/keyrings/
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
 
       - name: Run Trivy vulnerability scanner
         run: |
-          trivy fs --exit-code 0 --severity HIGH,CRITICAL .
+          trivy fs --exit-code 0 --ignore-unfixed --severity HIGH,CRITICAL .

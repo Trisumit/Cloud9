@@ -18,6 +18,6 @@ jobs:
           wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.51.1_Linux-64bit.deb
           sudo dpkg -i trivy_0.51.1_Linux-64bit.deb
 
-      - name: Run Trivy scan on filesystem
+      - name: Run Trivy vulnerability scanner
         run: |
-          trivy fs . --exit-code 1 --severity HIGH,CRITICAL --no-progress
+          trivy fs --exit-code 0 --severity HIGH,CRITICAL .

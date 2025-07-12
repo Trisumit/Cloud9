@@ -22,8 +22,8 @@ resource "aws_security_group" "web_sg" {
 }
 
 resource "aws_instance" "web" {
-  ami           = "ami-0e670eb768a5fc3d4" # Amazon Linux 2 in ap-south-1
-  instance_type = "t2.micro"
+  ami             = "ami-0e670eb768a5fc3d4" # Amazon Linux 2 in ap-south-1
+  instance_type   = "t2.micro"
   security_groups = [aws_security_group.web_sg.name]
 
   user_data = <<-EOF

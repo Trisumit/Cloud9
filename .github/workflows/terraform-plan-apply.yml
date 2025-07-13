@@ -1,6 +1,9 @@
 name: Terraform Plan & Apply with Manual Approval
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -10,12 +13,15 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.5 # or your version
+          terraform_version: 1.6.0
+
+      - name: Terraform Init
+        run: terraform init
 
       - name: Terraform Format
         run: terraform fmt -check
@@ -26,12 +32,9 @@ jobs:
       - name: Run tfsec (Terraform Security Scan)
         uses: aquasecurity/tfsec-action@v1.0.0
 
-      - name: Terraform Init
-        run: terraform init
-
       - name: Terraform Plan
         run: terraform plan
 
       - name: Terraform Apply (Manual Trigger Required)
-        if: github.event.inputs.approve == 'true'
+        if: github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve

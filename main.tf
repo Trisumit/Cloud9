@@ -43,7 +43,7 @@ resource "aws_instance" "web" {
   ami                         = "ami-0e670eb768a5fc3d4"
   instance_type               = "t2.micro"
   security_groups             = [aws_security_group.web_sg.name]
-  associate_public_ip_address = aws_instance.web.public_ip != null ? true : false
+  associate_public_ip_address = true
   key_name                    = "sumit-github-key"
   user_data                   = <<-EOF
     #!/bin/bash

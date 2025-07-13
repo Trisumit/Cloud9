@@ -1,6 +1,7 @@
 name: Terraform Plan & Apply with Manual Approval
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'terraform-node-app/**'
@@ -52,4 +53,3 @@ jobs:
       - name: Terraform Apply (Manual Trigger Required)
         if: github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve
-          

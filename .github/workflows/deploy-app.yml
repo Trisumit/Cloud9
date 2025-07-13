@@ -1,7 +1,14 @@
-name: Deploy Node.js App to EC2
+name: Deploy index.html to EC2
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - 'terraform-node-app/**'
+      - 'app/**'
+    branches:
+      - main
+      - feature/Test
+  
 
 jobs:
   deploy:

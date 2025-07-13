@@ -30,13 +30,21 @@ resource "aws_security_group" "web_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
 }
 
 resource "aws_instance" "web" {
   ami             = "ami-0e670eb768a5fc3d4" # Amazon Linux 2 in ap-south-1
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.web_sg.name]
-
+  associate_public_ip_address = aws_instance.web.public_ip != null ? true : false
+  key_name = "sumit-github-key"
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
